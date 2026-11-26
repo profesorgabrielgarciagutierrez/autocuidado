@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#123b52">
+<title>Pausa · Respiración y enfoque</title>
+<style>
+:root{color-scheme:light;--ink:#193342;--muted:#5a707a;--blue:#176b78;--mint:#d8f0e8;--paper:#f5f8f7;--white:#fff;--line:#dbe6e3;--gold:#f2c879}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#e9f4f1 0,#f7f9f8 330px);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{width:min(900px,100%);margin:0 auto;padding:18px 18px 48px}
+header{text-align:center;padding:14px 0 20px}
+h1{font-size:clamp(1.7rem,5vw,2.5rem);line-height:1.12;margin:8px 0;color:#123b52}
+.subtitle{color:var(--muted);max-width:650px;margin:10px auto}
+.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;align-items:start}
+.card{background:var(--white);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 8px 24px #123b520b}
+.card h2{font-size:1.2rem;margin:0 0 12px}
+.breath-card{text-align:center}
+.phase{font-size:1.4rem;font-weight:700;min-height:2.1rem;margin:8px 0 0;color:#176b78}
+.count{font-size:3.4rem;font-weight:750;line-height:1;margin:6px 0 0;font-variant-numeric:tabular-nums}
+.circle-wrap{height:210px;display:grid;place-items:center}
+.circle{width:132px;height:132px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fbffff,#b9e7da 55%,#6cb5ae);box-shadow:0 14px 35px #176b7824;transform:scale(.82);transition:transform 1s ease,filter 1s ease}
+.circle.inhale{transform:scale(1.15);filter:saturate(1.08)}
+.circle.hold{transform:scale(1.15);filter:saturate(1.08)}
+.circle.exhale{transform:scale(.82);filter:saturate(.86)}
+.cycle-info{color:var(--muted);font-size:.95rem;min-height:1.5em}
+.settings{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0 10px}
+label.setting{display:flex;align-items:center;gap:8px;background:#f4f8f7;border:1px solid var(--line);border-radius:12px;padding:8px 10px;color:var(--muted);font-size:.93rem}
+input[type=number]{width:54px;border:1px solid #b7c9c5;border-radius:8px;padding:7px;text-align:center;font:inherit;color:var(--ink);background:#fff}
+button{border:0;border-radius:12px;padding:12px 18px;font:700 1rem system-ui;cursor:pointer;transition:transform .12s ease,opacity .12s ease}
+button:active{transform:scale(.98)}
+button:disabled{opacity:.55;cursor:not-allowed}
+.primary{background:#176b78;color:white}
+.secondary{background:#e8f1ef;color:#194653}
+.stop{background:#f6e8e5;color:#8b3e32}
+.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:16px 0 0}
+.note{font-size:.88rem;color:var(--muted);margin:14px auto 0;max-width:600px}
+.tools{display:grid;gap:18px}
+.ground-step{background:#f0f7f5;border-radius:14px;padding:16px;margin:12px 0;color:#194653;min-height:92px}
+.ground-step strong{display:block;color:#176b78;font-size:1.05rem;margin-bottom:4px}
+.ground-count{font-size:.86rem;color:var(--muted)}
+textarea{width:100%;min-height:76px;resize:vertical;border:1px solid #b7c9c5;border-radius:10px;padding:10px 12px;font:inherit;color:var(--ink);background:#fff}
+.field{display:grid;gap:5px;margin:12px 0}
+.field label{font-weight:650;font-size:.94rem}
+.prompt{color:var(--muted);font-size:.9rem;margin:0 0 8px}
+.small-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.small-actions button{font-size:.92rem;padding:10px 14px}
+.nav-wrap{position:sticky;top:0;z-index:5;background:#f5f8f7ee;backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;padding:7px;margin:0 0 20px;overflow-x:auto;scrollbar-width:thin}
+.nav{display:flex;gap:7px;min-width:max-content}
+.nav a{display:block;padding:9px 14px;border-radius:10px;color:#194653;text-decoration:none;font-weight:650;white-space:nowrap}
+.nav a:hover,.nav a:focus{background:#d8f0e8;outline:2px solid transparent}
+.thought-steps{counter-reset:steps;list-style:none;padding:0;margin:14px 0}
+.thought-steps li{counter-increment:steps;position:relative;padding:0 0 13px 38px;color:#3c5963}
+.thought-steps li:before{content:counter(steps);position:absolute;left:0;top:0;width:26px;height:26px;display:grid;place-items:center;border-radius:50%;background:#d8f0e8;color:#176b78;font-weight:750}
+.response-box{margin-top:14px;border-left:4px solid #6cb5ae;background:#f0f7f5;border-radius:0 12px 12px 0;padding:14px;color:#194653;min-height:48px}
+.choice-row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
+.choice-row button{background:#e8f1ef;color:#194653;font-size:.9rem;padding:9px 12px}
+.choice-row button[aria-pressed=true]{background:#176b78;color:white}
+.section-anchor{scroll-margin-top:90px}
+footer{font-size:.88rem;color:var(--muted);text-align:center;margin:20px auto 0;max-width:760px}
+@media(max-width:720px){.grid{grid-template-columns:1fr}.circle-wrap{height:175px}.card{padding:18px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div aria-hidden="true" style="font-size:1.8rem">◌</div>
+<h1>Pausa: respiración y enfoque</h1>
+<p class="subtitle">Herramientas breves para reconocer la preocupación, elegir una respuesta y volver a lo que está haciendo.</p>
+</header>
+<nav class="nav-wrap" aria-label="Secciones de la aplicación"><div class="nav">
+<a href="#respiracion">Respiración</a><a href="#preocupacion">Manejar una preocupación</a><a href="#presente">Volver al presente</a>
+</div></nav>
+<div class="grid">
+<section class="card breath-card section-anchor" id="respiracion" aria-labelledby="breathing-title">
+<h2 id="breathing-title">Respiración guiada</h2>
+<div id="phase" class="phase" aria-live="polite">Listo cuando usted quiera</div>
+<div class="circle-wrap" aria-hidden="true"><div id="circle" class="circle"></div></div>
+<div id="count" class="count" aria-label="Cuenta regresiva">—</div>
+<div id="cycleInfo" class="cycle-info">Ajuste los tiempos y pulse Iniciar.</div>
+<div class="settings" aria-label="Duración de cada fase en segundos">
+<label class="setting" for="inhale">Inhalar <input id="inhale" type="number" min="1" max="12" value="4" inputmode="numeric"> s</label>
+<label class="setting" for="hold">Sostener <input id="hold" type="number" min="0" max="8" value="0" inputmode="numeric"> s</label>
+<label class="setting" for="exhale">Soltar <input id="exhale" type="number" min="2" max="15" value="6" inputmode="numeric"> s</label>
+</div>
+<p class="note">Respire suavemente, sin llenar los pulmones a la fuerza. Si sostener el aire incomoda, deje ese tiempo en 0. Si siente mareo o malestar, detenga el ciclo y respire con normalidad.</p>
+<div class="actions">
+<button id="startBtn" class="primary" type="button">Iniciar ciclo</button>
+<button id="stopBtn" class="stop" type="button" disabled>Detener</button>
+</div>
+<div id="wakeNote" class="note" aria-live="polite"></div>
+</section>
+<div class="tools">
+<section class="card section-anchor" id="presente" aria-labelledby="ground-title">
+<h2 id="ground-title">Volver al presente · 5 sentidos</h2>
+<p class="prompt">Mire a su alrededor y nombre en silencio lo que percibe, sin apurarse.</p>
+<div id="groundStep" class="ground-step"><strong>Cuando esté listo</strong>Pulse comenzar para iniciar el ejercicio.</div>
+<div class="small-actions">
+<button id="groundBtn" class="secondary" type="button">Comenzar</button>
+<button id="groundReset" class="secondary" type="button">Reiniciar</button>
+</div>
+</section>
+<section class="card section-anchor" id="preocupacion" aria-labelledby="thought-title">
+<h2 id="thought-title">Manejar una preocupación repetitiva</h2>
+<p class="prompt">La meta no es obligarse a dejar de pensar. Es reconocer el pensamiento, revisar qué sabe y escoger qué hacer con él.</p>
+<ol class="thought-steps">
+<li><strong>Reconózcalo:</strong> “Estoy teniendo la preocupación de que…”. Tener un pensamiento no significa que sea un hecho ni que deba resolverlo en este instante.</li>
+<li><strong>Separe dato de temor:</strong> ¿Qué ocurrió o sé con certeza? ¿Qué parte estoy anticipando o imaginando?</li>
+<li><strong>Elija el siguiente paso:</strong> si hay algo pequeño y útil que pueda hacer ahora, anótelo. Si no, decida cuándo volverá a revisarlo y regrese a la actividad presente.</li>
+</ol>
+<p class="prompt">Puede elegir el tema para recibir preguntas que le ayuden a aterrizarlo:</p>
+<div class="choice-row" role="group" aria-label="Tema de preocupación">
+<button type="button" data-topic="clase" aria-pressed="true">Clases</button><button type="button" data-topic="hijos" aria-pressed="false">Mis hijos</button><button type="button" data-topic="otro" aria-pressed="false">Otro tema</button>
+</div>
+<div class="field">
+<label for="worry">¿Qué me preocupa ahora?</label>
+<textarea id="worry" placeholder="Escriba la preocupación tal como aparece, en una frase."></textarea>
+</div>
+<div class="field">
+<label for="facts">¿Qué sé como hecho y qué estoy temiendo?</label>
+<textarea id="facts" placeholder="Hecho comprobable: … / Lo que temo que ocurra: …"></textarea>
+</div>
+<div class="field">
+<label for="nextStep">¿Hay una acción útil que dependa de mí?</label>
+<textarea id="nextStep" placeholder="Si sí: una acción pequeña y cuándo la haré. Si no: cuándo revisaré esta preocupación y a qué tarea regreso ahora."></textarea>
+</div>
+<div id="topicPrompt" class="response-box" aria-live="polite">Para una preocupación sobre clases: ¿qué necesita estar preparado para la próxima sesión? ¿Qué puede responder si una pregunta requiere verificar una fuente antes de contestar?</div>
+<div class="small-actions"><button id="clearBtn" class="secondary" type="button">Borrar mis notas</button><button id="closeThought" class="secondary" type="button">Cerrar este ejercicio</button></div>
+<p class="note">Si la preocupación vuelve, puede decirse: “Ya la anoté; la revisaré en el momento que elegí”. Luego vuelva con suavidad al siguiente paso de su actividad, aunque el pensamiento siga presente.</p>
+</section>
+</div>
+</div>
+<footer>
+La aplicación busca ayudarle a practicar autorregulación y manejo de preocupaciones en el día a día; no pretende explicar por sí sola la causa de la presión ni sustituye la atención clínica. Las notas se mantienen solo mientras esta página esté abierta y no se envían ni se guardan.
+</footer>
+</main>
+<script>
+(function(){
+"use strict";
+var phaseEl=document.getElementById("phase"), countEl=document.getElementById("count"), infoEl=document.getElementById("cycleInfo");
+var circle=document.getElementById("circle"), startBtn=document.getElementById("startBtn"), stopBtn=document.getElementById("stopBtn");
+var inhaleInput=document.getElementById("inhale"), holdInput=document.getElementById("hold"), exhaleInput=document.getElementById("exhale");
+var running=false, rafId=0, phases=[], phaseIndex=0, phaseStarted=0, cycle=0, wakeLock=null;
+var labels={inhale:"Inhalar suavemente",hold:"Sostener sin tensión",exhale:"Soltar el aire despacio"};
+function clamp(input,min,max){var n=parseInt(input.value,10);if(!Number.isFinite(n))n=min;n=Math.max(min,Math.min(max,n));input.value=String(n);return n;}
+function makePhases(){
+ var a=clamp(inhaleInput,1,12),h=clamp(holdInput,0,8),e=clamp(exhaleInput,2,15),result=[{key:"inhale",seconds:a}];
+ if(h>0)result.push({key:"hold",seconds:h});
+ result.push({key:"exhale",seconds:e});return result;
+}
+function setPhase(){
+ var p=phases[phaseIndex];phaseStarted=performance.now();
+ phaseEl.textContent=labels[p.key];circle.className="circle "+p.key;
+ infoEl.textContent="Ciclo "+cycle+" · Puede detenerlo cuando quiera.";
+}
+function tick(now){
+ if(!running)return;
+ var p=phases[phaseIndex],elapsed=(now-phaseStarted)/1000,remaining=Math.max(0,p.seconds-elapsed);
+ countEl.textContent=String(Math.ceil(remaining));
+ if(elapsed>=p.seconds){
+  phaseIndex++;
+  if(phaseIndex>=phases.length){phaseIndex=0;cycle++;}
+  setPhase();
+ }
+ rafId=requestAnimationFrame(tick);
+}
+function requestWakeLock(){
+ if("wakeLock" in navigator){navigator.wakeLock.request("screen").then(function(lock){wakeLock=lock;}).catch(function(){document.getElementById("wakeNote").textContent="Si la pantalla se apaga, toque la pantalla y vuelva a esta página.";});}
+}
+function start(){
+ if(running)return;
+ phases=makePhases();phaseIndex=0;cycle=1;running=true;
+ startBtn.disabled=true;stopBtn.disabled=false;
+ inhaleInput.disabled=holdInput.disabled=exhaleInput.disabled=true;
+ requestWakeLock();setPhase();countEl.textContent=String(phases[0].seconds);rafId=requestAnimationFrame(tick);
+}
+function stop(){
+ if(!running)return;
+ running=false;cancelAnimationFrame(rafId);
+ startBtn.disabled=false;stopBtn.disabled=true;
+ inhaleInput.disabled=holdInput.disabled=exhaleInput.disabled=false;
+ phaseEl.textContent="Pausa terminada";countEl.textContent="—";infoEl.textContent="Hizo "+cycle+" ciclo"+(cycle===1?"":"s")+". Tómese un momento antes de continuar.";
+ circle.className="circle";
+ if(wakeLock){wakeLock.release().catch(function(){});wakeLock=null;}
+}
+startBtn.addEventListener("click",start);stopBtn.addEventListener("click",stop);
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible"&&running)requestWakeLock();});
+var groundItems=[
+ ["5 cosas que ve","Observe cinco colores, formas u objetos a su alrededor."],
+ ["4 sensaciones","Note cuatro puntos de contacto: pies, espalda, manos o ropa."],
+ ["3 sonidos","Identifique tres sonidos, cercanos o lejanos."],
+ ["2 olores","Reconozca dos olores; si no percibe ninguno, note dos sensaciones del aire."],
+ ["1 sabor o sensación","Note un sabor presente o cómo se siente una respiración natural."]
+],groundIndex=-1;
+var groundStep=document.getElementById("groundStep"),groundBtn=document.getElementById("groundBtn");
+groundBtn.addEventListener("click",function(){
+ groundIndex=(groundIndex+1)%groundItems.length;
+ var item=groundItems[groundIndex];
+ groundStep.innerHTML="<strong>"+item[0]+"</strong>"+item[1]+"<div class='ground-count'>Paso "+(groundIndex+1)+" de "+groundItems.length+"</div>";
+ groundBtn.textContent=groundIndex===groundItems.length-1?"Empezar de nuevo":"Siguiente sentido";
+});
+document.getElementById("groundReset").addEventListener("click",function(){groundIndex=-1;groundStep.innerHTML="<strong>Cuando esté listo</strong>Pulse comenzar para iniciar el ejercicio.";groundBtn.textContent="Comenzar";});
+var prompts={
+ clase:"Para una preocupación sobre clases: ¿qué necesita estar preparado para la próxima sesión? ¿Qué puede responder si una pregunta requiere verificar una fuente antes de contestar?",
+ hijos:"Para una preocupación sobre sus hijos: ¿hay una señal concreta que requiera actuar ahora? Si no, ¿cuándo sería razonable preguntarles o revisar cómo están, y qué hará hasta entonces?",
+ otro:"Para este otro tema: ¿qué parte es un hecho presente y qué parte es una posibilidad temida? ¿Hay una acción pequeña y realista que dependa de usted?"
+};
+var topicPrompt=document.getElementById("topicPrompt");
+document.querySelectorAll("[data-topic]").forEach(function(btn){btn.addEventListener("click",function(){document.querySelectorAll("[data-topic]").forEach(function(b){b.setAttribute("aria-pressed","false");});btn.setAttribute("aria-pressed","true");topicPrompt.textContent=prompts[btn.dataset.topic];});});
+document.getElementById("clearBtn").addEventListener("click",function(){document.getElementById("worry").value="";document.getElementById("facts").value="";document.getElementById("nextStep").value="";});
+document.getElementById("closeThought").addEventListener("click",function(){document.getElementById("preocupacion").scrollIntoView({behavior:"smooth",block:"start"});document.getElementById("worry").blur();});
+})();
+</script>
+</body>
+</html>
