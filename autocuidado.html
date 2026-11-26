@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#123b52">
+<title>Pausa · Respiración, enfoque y presente</title>
+<style>
+:root{color-scheme:light;--ink:#193342;--muted:#5a707a;--blue:#176b78;--mint:#d8f0e8;--paper:#f5f8f7;--white:#fff;--line:#dbe6e3;--gold:#f2c879}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#e9f4f1 0,#f7f9f8 330px);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{width:min(100%,460px);margin:0 auto;padding:14px 12px 34px}
+header{text-align:center;padding:10px 6px 15px}
+h1{font-size:clamp(1.55rem,7vw,2rem);line-height:1.12;margin:8px 0;color:#123b52}
+.subtitle{color:var(--muted);font-size:.95rem;margin:8px auto 0;max-width:410px}
+.nav-wrap{position:sticky;top:0;z-index:5;background:#f5f8f7ed;backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;padding:6px;margin:0 0 14px;overflow-x:auto;scrollbar-width:thin}
+.nav{display:flex;gap:5px;min-width:max-content}
+.nav button{border:0;background:transparent;padding:10px 12px;border-radius:10px;color:#31515d;font:650 .91rem system-ui;white-space:nowrap;cursor:pointer}
+.nav button.active,.nav button[aria-selected=true]{background:#176b78;color:#fff}
+.panel{width:100%;animation:appear .18s ease-out}
+.panel[hidden],.wizard-step[hidden]{display:none}
+@keyframes appear{from{opacity:.75;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:19px 17px;box-shadow:0 8px 24px #123b520b}
+.card h2{font-size:1.2rem;margin:0 0 8px;color:#123b52}
+.prompt{color:var(--muted);font-size:.94rem;margin:0 0 14px}
+.phase{font-size:1.28rem;font-weight:750;min-height:2rem;margin:8px 0 0;color:#176b78}
+.count{font-size:3.45rem;font-weight:780;line-height:1;margin:8px 0 0;font-variant-numeric:tabular-nums}
+.circle-wrap{height:160px;display:grid;place-items:center}
+.circle{width:122px;height:122px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fbffff,#b9e7da 55%,#6cb5ae);box-shadow:0 14px 35px #176b7824;transform:scale(.82);transition:transform 1s ease,filter 1s ease}
+.circle.inhale,.circle.hold{transform:scale(1.13);filter:saturate(1.08)}
+.circle.exhale{transform:scale(.82);filter:saturate(.86)}
+.cycle-info{color:var(--muted);font-size:.9rem;min-height:1.5em}
+.settings{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:16px 0 10px}
+.setting{display:grid;justify-items:center;gap:4px;background:#f4f8f7;border:1px solid var(--line);border-radius:11px;padding:8px 4px;color:var(--muted);font-size:.84rem}
+input[type=number]{width:52px;border:1px solid #b7c9c5;border-radius:8px;padding:6px;text-align:center;font:inherit;color:var(--ink);background:#fff}
+button{border:0;border-radius:12px;padding:11px 15px;font:700 .97rem system-ui;cursor:pointer;transition:transform .12s ease,opacity .12s ease}
+button:active{transform:scale(.98)}
+button:disabled{opacity:.55;cursor:not-allowed}
+.primary{background:#176b78;color:white}
+.secondary{background:#e8f1ef;color:#194653}
+.stop{background:#f6e8e5;color:#8b3e32}
+.actions{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:13px 0 0}
+.sound-setting{display:flex;justify-content:center;align-items:center;gap:8px;margin:12px auto 0;color:#31515d;font-size:.91rem}
+.sound-setting input{width:18px;height:18px;accent-color:#176b78}
+.sound-test{display:flex;justify-content:center;margin:8px 0 0}
+.sound-test button{font-size:.88rem;padding:9px 13px}
+.note{font-size:.83rem;color:var(--muted);margin:12px auto 0;max-width:390px}
+.nav-bottom{display:flex;justify-content:space-between;gap:8px;margin-top:13px}
+.nav-bottom button{font-size:.88rem;padding:10px 12px}
+.wizard-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:.88rem;margin-bottom:11px}
+.progress{height:7px;background:#e7efed;border-radius:99px;overflow:hidden;flex:1;margin-left:12px}
+.progress>span{display:block;height:100%;width:25%;background:#49a394;border-radius:99px;transition:width .2s ease}
+.step-title{color:#176b78;font-weight:750;font-size:1.02rem;margin:0 0 6px}
+.field{display:grid;gap:6px;margin:13px 0}
+.field label{font-weight:680;font-size:.94rem}
+textarea{width:100%;min-height:90px;resize:vertical;border:1px solid #b7c9c5;border-radius:11px;padding:11px 12px;font:inherit;color:var(--ink);background:#fff}
+textarea:focus,input:focus{outline:3px solid #a9dcd3;outline-offset:1px}
+.choice-row{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 14px}
+.choice-row button{background:#e8f1ef;color:#194653;font-size:.87rem;padding:8px 10px}
+.choice-row button[aria-pressed=true]{background:#176b78;color:#fff}
+.wizard-actions{display:flex;justify-content:space-between;gap:8px;margin-top:16px}
+.wizard-actions button{flex:1}
+.tip-box,.response-box{margin-top:13px;border-left:4px solid #6cb5ae;background:#f0f7f5;border-radius:0 12px 12px 0;padding:12px 13px;color:#194653;font-size:.93rem}
+.response-box{white-space:pre-wrap}
+.ground-step{background:#f0f7f5;border-radius:14px;padding:16px;margin:12px 0;color:#194653;min-height:108px}
+.ground-step strong{display:block;color:#176b78;font-size:1.08rem;margin-bottom:5px}
+.ground-count{font-size:.86rem;color:var(--muted);margin-top:8px}
+footer{font-size:.82rem;color:var(--muted);text-align:center;margin:16px auto 0;max-width:420px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div aria-hidden="true" style="font-size:1.7rem">◌</div>
+<h1>Pausa</h1>
+<p class="subtitle">Respirar, aclarar un pensamiento y volver a este momento, paso a paso.</p>
+</header>
+
+<nav class="nav-wrap" aria-label="Secciones">
+<div class="nav" role="tablist" aria-label="Herramientas de Pausa">
+<button type="button" id="tab-breath" role="tab" aria-controls="panel-breath" aria-selected="true" class="active">Respiración</button>
+<button type="button" id="tab-focus" role="tab" aria-controls="panel-focus" aria-selected="false">Enfoque</button>
+<button type="button" id="tab-now" role="tab" aria-controls="panel-now" aria-selected="false">Aquí y ahora</button>
+</div>
+</nav>
+
+<section class="panel" id="panel-breath" role="tabpanel" aria-labelledby="tab-breath">
+<div class="card" aria-labelledby="breathing-title">
+<h2 id="breathing-title">Respiración guiada</h2>
+<p class="prompt">Siga la palabra y el círculo. El ciclo continúa hasta que pulse <strong>Detener</strong>.</p>
+<div id="phase" class="phase" aria-live="polite">Listo cuando usted quiera</div>
+<div class="circle-wrap" aria-hidden="true"><div id="circle" class="circle"></div></div>
+<div id="count" class="count" aria-label="Cuenta regresiva">—</div>
+<div id="cycleInfo" class="cycle-info" aria-live="polite">El pitido suena cuando la cuenta llega a cero.</div>
+<div class="settings" aria-label="Duración de cada fase en segundos">
+<label class="setting" for="inhale">Inhalar<input id="inhale" type="number" min="1" max="12" value="4" inputmode="numeric"><span>segundos</span></label>
+<label class="setting" for="hold">Sostener<input id="hold" type="number" min="0" max="8" value="2" inputmode="numeric"><span>0 = omitir</span></label>
+<label class="setting" for="exhale">Soltar<input id="exhale" type="number" min="2" max="15" value="6" inputmode="numeric"><span>segundos</span></label>
+</div>
+<label class="sound-setting"><input id="beepOn" type="checkbox" checked> Pitido al llegar a cero</label>
+<div class="sound-test"><button id="testBeepBtn" class="secondary" type="button">Probar pitido</button></div>
+<p class="note">Respire sin forzar. Si sostener el aire le incomoda, ponga 0. El pitido depende del volumen del dispositivo; puede apagarlo cuando quiera.</p>
+<div class="actions">
+<button id="startBtn" class="primary" type="button">Iniciar ciclo</button>
+<button id="stopBtn" class="stop" type="button" disabled>Detener</button>
+</div>
+<div id="audioNote" class="note" aria-live="polite"></div>
+</div>
+<div class="nav-bottom"><span></span><button class="secondary go-tab" data-go="focus" type="button">Siguiente: Enfoque →</button></div>
+</section>
+
+<section class="panel" id="panel-focus" role="tabpanel" aria-labelledby="tab-focus" hidden>
+<div class="card">
+<h2>Manejar una preocupación</h2>
+<p class="prompt">No tiene que borrar el pensamiento. Vamos a mirarlo con claridad y responderle con respeto.</p>
+<div class="wizard-top"><span id="stepLabel">Paso 1 de 4</span><div class="progress" aria-hidden="true"><span id="progressBar"></span></div></div>
+
+<div class="wizard-step" data-step="0">
+<p class="step-title">1 · Póngale nombre</p>
+<p class="prompt">Complete: “Estoy teniendo el pensamiento de que…”</p>
+<div class="choice-row" role="group" aria-label="Tema de preocupación">
+<button type="button" data-topic="clase" aria-pressed="true">Clases</button>
+<button type="button" data-topic="hijos" aria-pressed="false">Mis hijos</button>
+<button type="button" data-topic="comida" aria-pressed="false">Comida</button>
+<button type="button" data-topic="otro" aria-pressed="false">Otro</button>
+</div>
+<div class="field"><label for="thought">¿Qué pensamiento apareció?</label><textarea id="thought" placeholder="Ejemplo: mis estudiantes notarán que no sé responder."></textarea></div>
+<div class="tip-box" id="topicHint">No lo discuta todavía. Solo nómbrelo como un pensamiento que apareció, no como una sentencia.</div>
+</div>
+
+<div class="wizard-step" data-step="1" hidden>
+<p class="step-title">2 · Separe el hecho de la predicción</p>
+<p class="prompt">Un hecho se puede comprobar ahora. Una predicción cuenta lo que su temor imagina que podría pasar.</p>
+<div class="field"><label for="fact">¿Qué sé con certeza en este momento?</label><textarea id="fact" placeholder="Escriba solo lo que puede observar o comprobar."></textarea></div>
+<div class="field"><label for="prediction">¿Qué está prediciendo mi temor?</label><textarea id="prediction" placeholder="Por ejemplo: “si no sé una respuesta, todos pensarán que no sirvo”."></textarea></div>
+</div>
+
+<div class="wizard-step" data-step="2" hidden>
+<p class="step-title">3 · Respóndase con cariño y realismo</p>
+<p class="prompt">No busque una frase optimista a la fuerza. Busque una que reconozca la dificultad y también sus recursos.</p>
+<div class="field"><label for="balanced">¿Qué le diría a alguien querido en esta situación?</label><textarea id="balanced" placeholder="Puedo reconocer que esto me preocupa y responder sin insultarme."></textarea></div>
+<button id="suggestReply" class="secondary" type="button">Ayúdame con una frase posible</button>
+<div class="tip-box">Una respuesta equilibrada puede incluir: “Es posible que… y, si ocurre, puedo…”.</div>
+</div>
+
+<div class="wizard-step" data-step="3" hidden>
+<p class="step-title">4 · Elija el siguiente paso de hoy</p>
+<p class="prompt">¿Hay algo útil que dependa de usted ahora? Si ya lo hizo o no hay una acción posible, elija a qué actividad volverá durante los próximos minutos.</p>
+<div class="field"><label for="nextAction">Mi siguiente paso concreto</label><textarea id="nextAction" placeholder="Ejemplo: preparar el objetivo de la clase durante 15 minutos; luego continuar con la diapositiva siguiente."></textarea></div>
+<div class="tip-box">El éxito no es que el pensamiento desaparezca. Es poder notarlo y elegir su siguiente acción, aunque siga rondando.</div>
+</div>
+
+<div class="wizard-step" data-step="4" hidden>
+<p class="step-title">Por ahora, ya lo atendí</p>
+<p class="prompt">Lea su respuesta sin exigir sentirse completamente tranquilo.</p>
+<div id="summary" class="response-box"></div>
+<p class="note">Si el pensamiento vuelve sin información nueva, puede decir: “Ya lo revisé por ahora”. Luego vuelva a la acción que eligió.</p>
+</div>
+
+<div class="wizard-actions">
+<button id="backStep" class="secondary" type="button" disabled>← Atrás</button>
+<button id="nextStep" class="primary" type="button">Siguiente →</button>
+<button id="finishStep" class="primary" type="button" hidden>Terminar</button>
+</div>
+<div class="small-actions" style="margin-top:12px"><button id="clearFocus" class="secondary" type="button">Empezar de nuevo</button></div>
+</div>
+<div class="nav-bottom"><button class="secondary go-tab" data-go="breath" type="button">← Respiración</button><button class="secondary go-tab" data-go="now" type="button">Siguiente: Aquí y ahora →</button></div>
+</section>
+
+<section class="panel" id="panel-now" role="tabpanel" aria-labelledby="tab-now" hidden>
+<div class="card">
+<h2>Volver al presente</h2>
+<p class="prompt">Use los sentidos para orientar la atención hacia lo que está ocurriendo aquí, sin pelearse con el pensamiento.</p>
+<div id="groundStep" class="ground-step"><strong>Cuando esté listo</strong>Pulse comenzar. Puede hacerlo despacio; no hay respuestas correctas.</div>
+<div class="actions">
+<button id="groundBtn" class="primary" type="button">Comenzar</button>
+<button id="groundReset" class="secondary" type="button">Reiniciar</button>
+</div>
+<div class="tip-box">Al terminar, complete en silencio: “En este momento estoy aquí, y el siguiente paso que elijo es…”</div>
+</div>
+<div class="nav-bottom"><button class="secondary go-tab" data-go="focus" type="button">← Enfoque</button><span></span></div>
+</section>
+
+<footer>Esta herramienta es para practicar respiración, claridad y atención al presente. Sus respuestas no se guardan ni se envían; se borran al cerrar o recargar la página.</footer>
+</main>
+<script>
+(function(){
+"use strict";
+
+var tabIds=["breath","focus","now"];
+var tabs=tabIds.map(function(id){return document.getElementById("tab-"+id);});
+function activateTab(id){
+ tabs.forEach(function(tab){
+  var active=tab.id==="tab-"+id;
+  tab.setAttribute("aria-selected",active?"true":"false");
+  tab.classList.toggle("active",active);
+  document.getElementById("panel-"+idFromTab(tab.id)).hidden=!active;
+ });
+}
+function idFromTab(tabId){return tabId.replace("tab-","");}
+tabs.forEach(function(tab){tab.addEventListener("click",function(){activateTab(idFromTab(tab.id));});});
+document.querySelectorAll(".go-tab").forEach(function(btn){btn.addEventListener("click",function(){activateTab(btn.dataset.go);window.scrollTo({top:0,behavior:"smooth"});});});
+
+/* Respiración: cuenta cada segundo hasta mostrar 0; el bip ocurre al mostrar 0. */
+var phaseEl=document.getElementById("phase"),countEl=document.getElementById("count"),cycleInfo=document.getElementById("cycleInfo");
+var circle=document.getElementById("circle"),startBtn=document.getElementById("startBtn"),stopBtn=document.getElementById("stopBtn");
+var inhaleInput=document.getElementById("inhale"),holdInput=document.getElementById("hold"),exhaleInput=document.getElementById("exhale");
+var beepInput=document.getElementById("beepOn"),running=false,timerId=null,phaseList=[],phaseIndex=0,remaining=0,cycleNumber=0,audioCtx=null;
+var audioNote=document.getElementById("audioNote");
+var phaseNames={inhale:"Inhalar suavemente",hold:"Sostener sin tensión",exhale:"Soltar el aire despacio"};
+function clamped(input,min,max){var n=parseInt(input.value,10);if(!Number.isFinite(n))n=min;n=Math.max(min,Math.min(max,n));input.value=String(n);return n;}
+function makePhaseList(){
+ var holdSeconds=clamped(holdInput,0,8),list=[
+  {key:"inhale",seconds:clamped(inhaleInput,1,12)},
+  {key:"hold",seconds:holdSeconds},
+  {key:"exhale",seconds:clamped(exhaleInput,2,15)}
+ ];
+ return list.filter(function(p){return p.seconds>0;});
+}
+function enableAudio(){
+ var Ctx=window.AudioContext||window.webkitAudioContext;
+ if(!Ctx)return Promise.reject(new Error("unsupported"));
+ try{if(!audioCtx)audioCtx=new Ctx();}catch(e){return Promise.reject(e);}
+ var resumePromise=audioCtx.state==="running"?Promise.resolve():audioCtx.resume();
+ return resumePromise.then(function(){
+  if(audioCtx.state!=="running")throw new Error("audio-not-running");
+  audioNote.textContent="Audio activado. Compruebe que el volumen del dispositivo esté encendido.";
+  return audioCtx;
+ });
+}
+function playTone(){
+ var osc=audioCtx.createOscillator(),gain=audioCtx.createGain(),now=audioCtx.currentTime;
+ osc.type="sine";osc.frequency.setValueAtTime(880,now);
+ gain.gain.setValueAtTime(0.0001,now);gain.gain.exponentialRampToValueAtTime(0.42,now+0.015);gain.gain.exponentialRampToValueAtTime(0.0001,now+0.24);
+ osc.connect(gain);gain.connect(audioCtx.destination);osc.start(now);osc.stop(now+0.25);
+}
+function soundError(){audioNote.textContent="El navegador no pudo activar el pitido. Revise el volumen y pulse Probar pitido otra vez; la guía visual sigue funcionando.";}
+function beep(){
+ if(!beepInput.checked)return;
+ if(audioCtx&&audioCtx.state==="running"){try{playTone();}catch(e){soundError();}return;}
+ enableAudio().then(playTone).catch(soundError);
+}
+document.getElementById("testBeepBtn").addEventListener("click",function(){enableAudio().then(playTone).catch(soundError);});
+function showPhase(){
+ if(!running)return;
+ if(phaseIndex>=phaseList.length){phaseIndex=0;cycleNumber++;}
+ var p=phaseList[phaseIndex];
+ remaining=p.seconds;
+ phaseEl.textContent=phaseNames[p.key];
+ circle.className="circle "+p.key;
+ countEl.textContent=String(remaining);
+ cycleInfo.textContent="Ciclo "+cycleNumber+" · El pitido indica que la fase terminó.";
+ timerId=window.setTimeout(tickSecond,1000);
+}
+function tickSecond(){
+ if(!running)return;
+ remaining=Math.max(0,remaining-1);
+ countEl.textContent=String(remaining);
+ if(remaining===0){
+  beep();
+  timerId=window.setTimeout(function(){if(!running)return;phaseIndex++;showPhase();},350);
+ }else{
+  timerId=window.setTimeout(tickSecond,1000);
+ }
+}
+function startBreathing(){
+ if(running)return;
+ phaseList=makePhaseList();phaseIndex=0;cycleNumber=1;running=true;
+ startBtn.disabled=true;stopBtn.disabled=false;
+ inhaleInput.disabled=holdInput.disabled=exhaleInput.disabled=beepInput.disabled=true;
+ audioNote.textContent="";
+ if(beepInput.checked){
+  enableAudio().catch(soundError);
+ }
+ showPhase();
+}
+function stopBreathing(){
+ if(!running)return;
+ running=false;window.clearTimeout(timerId);timerId=null;
+ startBtn.disabled=false;stopBtn.disabled=true;
+ inhaleInput.disabled=holdInput.disabled=exhaleInput.disabled=beepInput.disabled=false;
+ phaseEl.textContent="Pausa terminada";countEl.textContent="—";
+ cycleInfo.textContent="Completó "+cycleNumber+" ciclo"+(cycleNumber===1?"":"s")+". Puede continuar cuando quiera.";
+ circle.className="circle";
+}
+startBtn.addEventListener("click",startBreathing);stopBtn.addEventListener("click",stopBreathing);
+
+/* Enfoque: asistente de cinco pantallas cortas. */
+var currentStep=0,totalSteps=5,stepViews=Array.prototype.slice.call(document.querySelectorAll(".wizard-step"));
+var stepLabel=document.getElementById("stepLabel"),progressBar=document.getElementById("progressBar"),backStep=document.getElementById("backStep"),nextStep=document.getElementById("nextStep"),finishStep=document.getElementById("finishStep");
+var topic="clase";
+var topicHints={
+ clase:"No lo discuta todavía. Solo nómbrelo como un pensamiento que apareció, no como una sentencia.",
+ hijos:"Que le preocupe el bienestar de sus hijos habla de cuánto le importan. Ahora solo vamos a nombrar el pensamiento, sin tratarlo todavía como un hecho.",
+ comida:"El deseo de disfrutar la comida y el deseo de cuidarse pueden estar presentes a la vez. Por ahora, escriba la preocupación sin juzgarse.",
+ otro:"Escriba la preocupación con sus palabras. No tiene que resolverla en este primer paso."
+};
+var suggested={
+ clase:"Es posible que no tenga una respuesta inmediata para todo. Eso no define por sí solo mi capacidad de enseñar. Puedo verificar una fuente y volver a la pregunta. Ahora preparo lo esencial para esta clase.",
+ hijos:"Me importa el bienestar de mis hijos, y mi temor no es una prueba de que algo malo esté ocurriendo. Puedo elegir una acción razonable si hace falta y volver a lo que tengo delante.",
+ comida:"Querer disfrutar los sabores no significa que no me importe cuidarme. Puedo atender mi salud con decisiones sostenibles y ocuparme de la comida que tengo delante, sin condenarme.",
+ otro:"Esta situación me preocupa, pero todavía no conozco todo el desenlace. Puedo reconocer lo que sé, atender el paso que depende de mí y dejar lo demás para cuando tenga información."
+};
+function renderStep(){
+ stepViews.forEach(function(view,i){view.hidden=i!==currentStep;});
+ var finalScreen=currentStep===4;
+ stepLabel.textContent=finalScreen?"Listo por ahora":("Paso "+(currentStep+1)+" de 4");
+ progressBar.style.width=(finalScreen?100:((currentStep+1)/4*100))+"%";
+ backStep.disabled=currentStep===0;
+ nextStep.hidden=finalScreen;
+ finishStep.hidden=!finalScreen;
+ if(currentStep===3)nextStep.textContent="Ver mi cierre →";else nextStep.textContent="Siguiente →";
+ if(finalScreen)makeSummary();
+}
+function valueOf(id){return document.getElementById(id).value.trim();}
+function makeSummary(){
+ var pieces=[];
+ if(valueOf("thought"))pieces.push("Pensamiento: "+valueOf("thought"));
+ if(valueOf("balanced"))pieces.push("Respuesta amable: "+valueOf("balanced"));
+ if(valueOf("nextAction"))pieces.push("Siguiente paso: "+valueOf("nextAction"));
+ document.getElementById("summary").textContent=pieces.length?pieces.join("\n\n"):"No escribió respuestas. Aun así, hizo una pausa para observar su pensamiento.";
+}
+backStep.addEventListener("click",function(){if(currentStep>0){currentStep--;renderStep();}});
+nextStep.addEventListener("click",function(){if(currentStep<4){currentStep++;renderStep();}});
+finishStep.addEventListener("click",function(){currentStep=0;renderStep();activateTab("now");window.scrollTo({top:0,behavior:"smooth"});});
+document.querySelectorAll("[data-topic]").forEach(function(btn){
+ btn.addEventListener("click",function(){
+  topic=btn.dataset.topic;
+  document.querySelectorAll("[data-topic]").forEach(function(b){b.setAttribute("aria-pressed","false");});
+  btn.setAttribute("aria-pressed","true");
+  document.getElementById("topicHint").textContent=topicHints[topic];
+ });
+});
+document.getElementById("suggestReply").addEventListener("click",function(){document.getElementById("balanced").value=suggested[topic];});
+document.getElementById("clearFocus").addEventListener("click",function(){
+ ["thought","fact","prediction","balanced","nextAction"].forEach(function(id){document.getElementById(id).value="";});
+ topic="clase";document.querySelectorAll("[data-topic]").forEach(function(b){var active=b.dataset.topic==="clase";b.setAttribute("aria-pressed",active?"true":"false");});
+ document.getElementById("topicHint").textContent=topicHints.clase;currentStep=0;renderStep();
+});
+renderStep();
+
+/* Aquí y ahora: ejercicio sensorial 5-4-3-2-1. */
+var groundItems=[
+ ["5 cosas que ve","Mire alrededor. Nombre cinco colores, formas u objetos. No tiene que buscar nada especial."],
+ ["4 sensaciones del cuerpo","Note cuatro puntos de contacto: los pies, la espalda, las manos o la ropa sobre la piel."],
+ ["3 sonidos","Escuche y nombre tres sonidos, cercanos o lejanos."],
+ ["2 olores","Reconozca dos olores. Si no percibe ninguno, note dos sensaciones del aire."],
+ ["1 sabor o sensación","Note un sabor presente o cómo se siente una respiración natural."]
+],groundIndex=-1;
+var groundStep=document.getElementById("groundStep"),groundBtn=document.getElementById("groundBtn");
+groundBtn.addEventListener("click",function(){
+ groundIndex++;
+ if(groundIndex>=groundItems.length){
+  groundStep.innerHTML="<strong>Ya está aquí</strong>Note el lugar donde está y elija el siguiente paso pequeño de su actividad.";
+  groundBtn.textContent="Repetir ejercicio";groundIndex=-1;return;
+ }
+ var item=groundItems[groundIndex];
+ groundStep.innerHTML="<strong>"+item[0]+"</strong>"+item[1]+"<div class=\"ground-count\">Paso "+(groundIndex+1)+" de "+groundItems.length+"</div>";
+ groundBtn.textContent=groundIndex===groundItems.length-1?"Terminar":"Siguiente sentido";
+});
+document.getElementById("groundReset").addEventListener("click",function(){
+ groundIndex=-1;groundStep.innerHTML="<strong>Cuando esté listo</strong>Pulse comenzar. Puede hacerlo despacio; no hay respuestas correctas.";groundBtn.textContent="Comenzar";
+});
+})();
+</script>
+</body>
+</html>
